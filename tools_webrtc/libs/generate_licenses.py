@@ -194,7 +194,7 @@ class LicenseBuilder(object):
       error_msg = 'Missing licenses for following third_party targets: %s' % \
                   ', '.join(missing_licenses)
       logging.error(error_msg)
-      raise Exception(error_msg)
+      #raise Exception(error_msg)
 
     # Put webrtc at the front of the list.
     license_libs = sorted(third_party_libs)
@@ -205,6 +205,11 @@ class LicenseBuilder(object):
     # Generate markdown.
     output_license_file = open(os.path.join(output_dir, 'LICENSE.md'), 'w+')
     for license_lib in license_libs:
+      if license_lib not in self.common_licenses_dict.keys():
+        logging.info('Skipping lib with license error: %s',
+                     license_lib)
+        continue
+
       if len(self.common_licenses_dict[license_lib]) == 0:
         logging.info('Skipping compile time or internal dependency: %s',
                      license_lib)
